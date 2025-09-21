@@ -1,0 +1,6 @@
+[submodule "ft_btree"]
+	path = ft_btree
+	url = https://github.com/arbutnar/ft_btree
+[submodule "ft_list"]
+	path = ft_list
+	url = https://github.com/arbutnar/ft_list
