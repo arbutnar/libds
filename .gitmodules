@@ -4,3 +4,6 @@
 [submodule "ft_list"]
 	path = ft_list
 	url = https://github.com/arbutnar/ft_list
+[submodule "ft_map"]
+	path = ft_map
+	url = https://github.com/arbutnar/ft_map

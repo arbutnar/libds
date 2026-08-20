@@ -1,39 +1,34 @@
-ARC     =   libds.a
-HDR     =   libds.h
-SRC_DIR =   src
-OBJ_DIR =   obj
-SRC     =   $(wildcard $(SRC_DIR)/*.c)
-OBJ     =   $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC))
+ARCHIVE = libds.a
+FLAGS = -Wall -Wextra -Werror -g
 
-FLAGS   =   -Wall -Wextra -Werror -g
+SUBDIRS = ft_list ft_btree ft_map
+SUBARCHIVES = $(foreach dir,$(SUBDIRS),$(dir)/$(dir).a)
+OBJECTS = $(foreach dir,$(SUBDIRS),$(wildcard $(dir)/obj/*.o))
 
-LIST    =   ft_list
-LIST_A  =   $(LIST)/$(LIST).a
 
-BTREE   =   ft_btree
-BTREE_A =   $(BTREE)/$(BTREE).a
+all: $(ARCHIVE)
 
-all: $(ARC)
+$(ARCHIVE): $(SUBARCHIVES)
+	$(info archiving $(ARCHIVE))
+	@ar rcs $@ $(OBJECTS)
 
-$(ARC): $(OBJ) $(LIST_A) $(BTREE_A)
-    ar rcs $(ARC) $^
+$(SUBARCHIVES): FORCE
+	$(info calling $(@D) Makefile)
+	@$(MAKE) -C $(@D)
 
-$(LIST_A) $(BTREE_A):
-    $(MAKE) -C $(dir $@)
-
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HDR)
-    @mkdir -p $(OBJ_DIR)
-    gcc $(FLAGS) -I. -c $< -o $@
+FORCE:
 
 clean:
-    $(MAKE) -C $(LIST) clean
-    $(MAKE) -C $(BTREE) clean
-    rm -rf $(OBJ_DIR)
+	@for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir $@; \
+	done
 
-fclean: clean
-    $(MAKE) -C $(LIST) fclean
-    $(MAKE) -C $(BTREE) fclean
-    rm -f $(ARC)
+fclean:
+	@for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir $@; \
+	done
+	$(info deleting $(ARCHIVE))
+	@rm -f $(ARCHIVE)
 
 re: fclean all
 
